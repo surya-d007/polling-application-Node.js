@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body>
+
+    <div class="creating-poll">
+        <form action="/create-new-poll" method="get">
+            <h1>Create new polling</h1>
+
+            <button type="submit" class="btn btn-primary">New poll</button>
+        </form>
+        
+    <div>
+
+    <div>
+        
+        <% if(Userdata){ %>
+        
+        <ul>
+            <% Userdata.polls.forEach(poll => { %>
+            <li>
+                <strong>Title:</strong> <%= poll.title %>, 
+                <strong>No. of Options:</strong> <%= poll.noofoptions %>
+                <ul>
+                <% poll.options.forEach(option => { %>
+                    <li><%= option %></li>
+                <% }); %>
+                </ul>
+
+                
+
+                <a href="<%=  Base_Link + "/" + poll._id+'/'+ poll.title %> "  target="_blank" ><h2> Link :<span><%=  Base_Link + "/" + poll._id+'/'+ poll.title %></span>   </h2></a>
+            </li>
+            <% }); %>
+        </ul>
+
+        <% } %>
+    </div>
+    
+
+        
+
+    </div>
+</body>
+</html>

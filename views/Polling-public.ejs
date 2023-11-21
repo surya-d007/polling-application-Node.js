@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll Details</title>
+</head>
+<body>
+    <h1>Poll Details</h1>
+
+    <h2><%= poll.title %></h2>
+    <p>Number of Options: <%= poll.noofoptions %></p>
+
+    <ul>
+        <% poll.options.forEach(option => { %>
+            <li>
+                <p>Option: <%= option.optiontext %></p>
+                <p>Opted Count: <%= option.opted %></p>
+            </li>
+        <% }); %>
+    </ul>
+
+</body>
+</html>
