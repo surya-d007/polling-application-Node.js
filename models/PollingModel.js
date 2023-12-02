@@ -10,6 +10,10 @@ const PollingModelSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+    description:{
+      type: String,
+      required: true,
+    },
     noofoptions : {
       type : Number
     },

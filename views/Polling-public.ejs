@@ -4,21 +4,150 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poll Details</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <link rel="stylesheet" href="/polling-public.css">
+
+    <style>
+         .hidden {
+      display: none;
+    }
+    </style>
 </head>
-<body>
-    <h1>Poll Details</h1>
+<body class="m-3 m-md-5 mt-5">
 
-    <h2><%= poll.title %></h2>
-    <p>Number of Options: <%= poll.noofoptions %></p>
+    <h1 class="fw-bold mb-3"><%= poll.title %></h1>
+    <h3 class="mb-5"><%= poll.description %></h3>
+    <% 
+    // Calculate total votes
+    const totalVotes = poll.options.reduce((acc, option) => acc + option.opted, 0);
 
-    <ul>
-        <% poll.options.forEach(option => { %>
-            <li>
-                <p>Option: <%= option.optiontext %></p>
-                <p>Opted Count: <%= option.opted %></p>
-            </li>
-        <% }); %>
-    </ul>
+    %>
+
+<script>
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + days);
+
+      const cookieValue = encodeURIComponent(value) + (days ? '; expires=' + expirationDate.toUTCString() : '');
+
+      document.cookie = name + '=' + cookieValue;
+    }
+
+    // Function to retrieve a cookie value by name
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+
+      for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.split('=');
+
+        if (cookieName === name) {
+          return decodeURIComponent(cookieValue);
+        }
+      }
+
+      return null;
+    }
+
+    // Function to handle button click in div 1
+    function handleButtonClick() {
+      // Set a cookie with the name "visitedCookie" and value "true"
+      setCookie('visitedpoll'+ '<%poll.obj_id%>', 'true', 40);
+
+      // Display div 2 and hide div 1
+      const div1 = document.getElementById('div1');
+      const div2 = document.getElementById('div2');
+      div1.classList.add('hidden');
+      div2.classList.remove('hidden');
+    }
+
+    // Get the value of the "visitedCookie" and display div 1 or div 2 accordingly
+    window.onload = function() {
+      const visitedCookie = getCookie('visitedpoll'+ '<%poll.obj_id%>');
+      const div1 = document.getElementById('div1');
+      const div2 = document.getElementById('div2');
+
+      if (visitedCookie) {
+        // User has the cookie, show div 2
+        div1.classList.add('hidden');
+        div2.classList.remove('hidden');
+      } else {
+        // User doesn't have the cookie, show div 1
+        div1.classList.remove('hidden');
+        div2.classList.add('hidden');
+      }
+    };
+  </script>
+
+
+
+   
+  <div id="div1">
+            <%
+            // Display options
+            poll.options.forEach(option => { 
+                // Calculate percentage
+                const percentage = totalVotes > 0 ? (option.opted / totalVotes) * 100 : 0;
+            %>
+
+                <form action="/voted" method="post">
+                    <div class="form-check" >
+                        <input type="hidden" name="objId" value="<%= poll.obj_id %>">
+                        <input type="hidden" name="optionId" value="<%= option._id %>">
+                        <input class="form-check-input" type="hidden" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            <button class=" my-2 p-0 border-0 rounded-4" type="submit" onclick="handleButtonClick()">
+                                <div class="d-flex p-1 rounded-4 border border-3 shadow btn-vote fw-bold" >
+                                    <div class="me-auto p-2"> <%= option.optiontext %></div>
+                                    
+                                </div>
+                            </button>
+                        </label>
+                    </div>
+                </form>
+                <% }); %>
+
+  </div>
+
+
+
+
+
+  <div id="div2" class="hidden">
+    <h3>You have voted succesfully !</h3>
+                <%
+            // Display options
+            poll.options.forEach(option => { 
+                // Calculate percentage
+                const percentage = totalVotes > 0 ? (option.opted / totalVotes) * 100 : 0;
+            %>
+                     
+                    <div class="form-check p-0" >
+                        <input type="hidden" name="objId" value="<%= poll.obj_id %>">
+                        <input type="hidden" name="optionId" value="<%= option._id %>">
+                        <input class="form-check-input" type="hidden" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            <div class=" my-2  p-0 " type="submit">
+                                <div class="d-flex p-1 rounded-4 border border-3 shadow btn-vote gradient-container" style="background: linear-gradient(to right, #e4ddef <%= percentage %>%, #ffffff <%= percentage %>%)">
+                                    <div class="me-auto p-2 fw-bold"> <%= option.optiontext %></div>
+                                    <div class="p-2 fw-bold">Vote Count: <%= option.opted %> ( <%= percentage.toFixed(2) %>%)</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+            <% }); %>
+  </div>
+
+
+
+
+    
+
+
+
+  
+  
 
 </body>
 </html>

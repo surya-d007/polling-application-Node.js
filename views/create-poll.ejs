@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="create-poll.css">
 </head>
-<body>
-    <form action="create-new-poll" method="post">
+<body class="m-3 m-md-5">
+    <form action="create-new-poll" method="post" class="fw-bold">
         <div class="form-floating mb-3">
             <input type="text" class="form-control" id="floatingInput" placeholder="polling title" name="polltitle">
             <label for="floatingInput">Polling Title</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="poll description" name="description">
+            <label for="floatingInput">Poll description</label>
         </div>
         <div class="form-floating mb-3">
             <input type="text" class="form-control" id="floatingInput" placeholder="option 1" name="opt-1">
@@ -20,8 +25,8 @@
             <!-- Additional options will be dynamically added here -->
         </div>
         <input type="hidden" id="optionCount" name="optionCount" value="1">
-        <button type="button" class="btn btn-primary" id="addOption">Add Option</button>
-        <button type="submit" class="btn btn-success">Create Poll</button>
+        <button type="button" class=" btn button fw-bold me-3 my-3 px-3" id="addOption">Add Option</button>
+        <button type="submit" class="btn button fw-bold px-3 my-3">Create Poll</button>
     </form>
 
     <script>
@@ -42,3 +47,4 @@
     </script>
 </body>
 </html>
+

@@ -5,43 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="home-details-create-poll.css">
 </head>
-<body>
+<body class="m-3 m-md-5">
 
     <div class="creating-poll">
         <form action="/create-new-poll" method="get">
-            <h1>Create new polling</h1>
-
-            <button type="submit" class="btn btn-primary">New poll</button>
+            <h1 class="mb-4 fw-bold">Create new polling</h1>
+            <button type="submit" class="btn button fw-bold mb-4">New poll</button>
         </form>
         
     <div>
 
-    <div>
-        
-        <% if(Userdata){ %>
-        
-        <ul>
-            <% Userdata.polls.forEach(poll => { %>
-            <li>
-                <strong>Title:</strong> <%= poll.title %>, 
-                <strong>No. of Options:</strong> <%= poll.noofoptions %>
-                <ul>
-                <% poll.options.forEach(option => { %>
-                    <li><%= option %></li>
+    <div class="container">
+            <% if(Userdata){ %>
+            
+
+                <% Userdata.polls.forEach(poll => { %>
+                    <div class="row p-2 p-md-5">
+                        <div class="col-12  p-4 p-md-5 rounded-4 shadow-lg border border-2 poll-card">
+                            <h1 class="fw-bold underlined-text">Title: <%= poll.title %> </h1> 
+                            <p class="mx-2 mx-md-4 mt-2 mt-md-5 fw-bold fs-3">Options:</p>
+                            <ol class="p-0 p-md-3 px-md-3">
+
+                            <div class="list-group list-group-numbered">
+                            <% poll.options.forEach(option => { %>
+                                <li class="list-group-item li-list-items fw-bold"><%= option %></li>
+                            <% }); %>
+                            </div>
+
+                            </ol>
+                            <p class="mx-2 mx-md-4 fw-bold link-text">Poll Link :<a class="fs-5" href="<%=  Base_Link + "/" + poll._id+'/'+ poll.title %> "  target="_blank" > <span><%=  Base_Link + "/" + poll._id+'/'+ poll.title %></span></a></p>
+                            <% var poll_count=poll_count+1 %>
+                            <p class="fw-bold">Do you want to delete this poll</p>
+                            <form action="/delete-poll" method="get">
+                                <input type="hidden" name="poll_delete_id" value="<%= poll._id %>">
+                                <button type="submit" class="btn btn button fw-bold shadow-lg">delete</button>
+                            </form>
+                            
+                        </div>
+                    </div>
                 <% }); %>
-                </ul>
-
-                
-
-                <a href="<%=  Base_Link + "/" + poll._id+'/'+ poll.title %> "  target="_blank" ><h2> Link :<span><%=  Base_Link + "/" + poll._id+'/'+ poll.title %></span>   </h2></a>
-            </li>
-            <% }); %>
-        </ul>
-
+            
         <% } %>
     </div>
     
+
 
         
 

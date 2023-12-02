@@ -1,0 +1,137 @@
+
+@font-face {
+    font-family: 'Poppins-Bold'; 
+    src: url('Poppins-Bold.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Poppins-ExtraBold';
+    src: url('Poppins-ExtraBold.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Poppins-Medium'; /* Choose a name for your font */
+    src: url('Poppins-Medium.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Poppins-Regular'; /* Choose a name for your font */
+    src: url('Poppins-Regular.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Poppins-SemiBold'; /* Choose a name for your font */
+    src: url('Poppins-SemiBold.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Poppins-Thin'; /* Choose a name for your font */
+    src: url('Poppins-Thin.ttf') format('truetype');
+  }
+
+
+
+
+
+  @font-face {
+    font-family: 'Inter-Bold'; /* Choose a name for your font */
+    src: url('Inter-Bold.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Inter-Light'; /* Choose a name for your font */
+    src: url('Inter-Light.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Inter-Medium'; /* Choose a name for your font */
+    src: url('Inter-Medium.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Inter-Regular'; /* Choose a name for your font */
+    src: url('Inter-Regular.ttf') format('truetype');
+  }
+  
+.whole-card{
+	background-color: #6046a1;
+	
+}
+
+
+.input-container{
+	position:relative; 
+    
+}
+.input-container label{
+	position:absolute;
+	top:0px;
+	left:0px;   
+	transition: all 0.5s ease-in-out;
+}
+.input-container input{ 
+  border:0;
+  border-bottom:2px solid #e2e2e2;  
+  background:transparent;
+  padding-right: 200px;
+}
+
+.input-container input:focus{ 
+ border:none;	
+ outline:none;
+ border-bottom:2px solid #6046a1;	
+}
+
+.input-container input:focus ~ label,
+.input-container input:valid ~ label{
+	top:-20px;
+	font-size:13px;
+}
+
+
+.login-card{
+	background-color: white;
+}
+h1{
+	color: #6046a1;
+	font-family: 'Inter-Bold'; 
+}
+p,label,input,button{
+	font-family: 'Inter-Medium';
+}
+
+.login-btn{
+	background-color: #6046a1;
+	color: white;
+}
+a,label{
+	color: #6046a1;
+}
+a:hover{
+	text-decoration: none;
+	color: #6046a1;
+}
+
+.login-btn:hover,.login-btn:focus{
+	border: 1px solid black;
+}
+
+
+
+
+
+@media (max-width: 425px) {
+	.input-container input{ 
+		padding-left: 20px;
+		padding-right: 0px;
+	  }
+}
+@media (min-width: 760px) and (max-width: 920px) {
+	.input-container input{ 
+		padding-right: 40px;
+	  }
+  }
+
+  @media (min-width: 798px) and (max-width: 1200px) {
+	.input-container input{ 
+		padding-right: 0px;
+	  }
+  }
+  @media (min-width: 420px) and (max-width: 515px) {
+	.input-container input{ 
+		padding-right: 70px;
+	  }
+  }
+  

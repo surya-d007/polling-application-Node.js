@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const session = require('express-session');
+const { findOne } = require('./models/HostUserModel');
 const CredentialsModel = require(__dirname + '/models/credentials');
 const HostUserModel = require(__dirname + '/models/HostUserModel');
 const PollingModel = require(__dirname + '/models/PollingModel');
@@ -33,7 +34,12 @@ app.use(bodyParser.json())
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/views/styles'));
-app.use(express.static(__dirname + '/node_modules/bootstrap/dist/css')) ;
+app.use(express.static(__dirname + '/views/js'));
+app.use(express.static(__dirname + '/views/font'));
+app.use(express.static(__dirname + '/views/font'));
+app.use(express.static(__dirname + '/views/font/Inter'));
+app.use(express.static(__dirname + '/views/Poppins'));
+//app.use(express.static(__dirname + '/node_modules/bootstrap/dist/css')) ;
 app.use(session({
   secret :' secret-key',
   resave: false,
@@ -42,35 +48,8 @@ app.use(session({
 
 
 
-app.get('/poll/:_id/:title', async (req, res) => {
-  const { _id } = req.params;
-  const { title } = req.params;
-  console.log('Received _id:', _id);
-  console.log('Received title:', title);
 
-  // Validate the ObjectId
-  if (!ObjectId.isValid(_id)) {
-    return res.status(400).json({ error: 'Invalid _id' });
-  }
 
-  try {
-    // Use Mongoose to find the document by _id
-
-    const existingPolldata = await PollingModel.findOne({ 'poll.obj_id': _id });
-
-    if (existingPolldata.poll.title == title) {
-      console.log('Found document:', existingPolldata);
-      res.render('Polling-public',{ poll : existingPolldata.poll});
-    } else {
-      console.log('Document not found');
-      res.status(404).json({ error: 'Document not found' });
-    }
-  } catch (err) {
-    console.error(err);
-    // Handle other errors appropriately
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 
 
@@ -158,13 +137,13 @@ app.get('/create-new-poll' , (req , res)=>{
 app.post('/create-new-poll', async (req, res) => {
   try {
     const userEmail = req.session.email;
-
-
     if (!userEmail) {
       return res.status(401).send('User not authenticated');
     }
 
+  
     const pollTitle = req.body.polltitle;
+    const description = req.body.description;
     const optionCount = req.body.optionCount;
     const options = [];
 
@@ -201,6 +180,7 @@ app.post('/create-new-poll', async (req, res) => {
         poll: {
           obj_id : savedPoll._id,
           title: pollTitle,
+          description : description,
           noofoptions: optionCount,
           options: optionsArray,
         },
@@ -211,7 +191,8 @@ app.post('/create-new-poll', async (req, res) => {
 
       const Userdata = await HostUserModel.findOne({ email: userEmail });
       if (Userdata) {
-        res.render('home-details-create-poll', { Userdata: Userdata });
+        const base_link = req.protocol + '://' + req.get('host') + "/poll" ;
+        res.render('home-details-create-poll' , {Userdata : Userdata , Base_Link : base_link} );
       } else {
         console.error('User data not found');
         res.status(404).send('User data not found');
@@ -244,6 +225,7 @@ app.post('/create-new-poll', async (req, res) => {
         poll: {
           obj_id : savedNewPoll._id,
           title: pollTitle,
+          description :description,
           noofoptions: optionCount,
           options: optionsArray,
         },
@@ -266,13 +248,105 @@ app.post('/create-new-poll', async (req, res) => {
 });
 
 
+app.get('/delete-poll', async(req, res) => {
+
+  const email = req.session.email;
+  const pollIdToDelete = req.query.poll_delete_id;
+  const updatedUser = await HostUserModel.findOneAndUpdate(
+    { email },
+    { $pull: { polls: { _id: pollIdToDelete } } },
+    { new: true }
+  );
+  const result = await PollingModel.findOneAndDelete({ 'poll.obj_id': pollIdToDelete });
+    if (result) {
+      console.log('Document deleted successfully');
+    } else {
+      console.log('Document not found or not deleted');
+    }
 
 
+    const Userdata = await HostUserModel.findOne({ email: email });
+      if (Userdata) {
+        const base_link = req.protocol + '://' + req.get('host') + "/poll" ;
+    res.render('home-details-create-poll' , {Userdata : Userdata , Base_Link : base_link} );
+}});
+
+
+
+
+app.get('/poll/:_id/:title', async (req, res) => {
+
+
+  const { _id } = req.params;
+  const { title } = req.params;
+  console.log('Received _id:', _id);
+  console.log('Received title:', title);
+
+
+  // Validate the ObjectId
+  if (!ObjectId.isValid(_id)) {
+    return res.status(400).json({ error: 'Invalid _id' });
+  }
+
+  try {
+    // Use Mongoose to find the document by _id
+
+    const existingPolldata = await PollingModel.findOne({ 'poll.obj_id': _id });
+
+    if (existingPolldata.poll.title == title) {
+      console.log('Found document:', existingPolldata);
+      res.render('Polling-public',{ poll : existingPolldata.poll});
+    } else {
+      console.log('Document not found');
+      res.status(404).json({ error: 'Document not found' });
+    }
+  } catch (err) {
+    console.error(err);
+    // Handle other errors appropriately
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.post('/voted', async (req, res) => {
+  const { objId, optionId } = req.body;
+  console.log(objId +" "+ optionId);
+
+  try {
+    // Find the poll with the specified obj_id
+    const polldata = await PollingModel.findOne({ 'poll.obj_id': objId });
+
+    if (!polldata) {
+      return res.status(404).json({ error: 'Poll not found' });
+    }
+
+    const selectedOption = await polldata.poll.options.find(option => option._id == optionId);
+    console.log(selectedOption);
+    if (!selectedOption) {
+      return res.status(404).json({ error: 'Option not found' });
+    }
+
+    // Increment the opted count
+    selectedOption.opted += 1;
+
+    // Save the updated poll
+    await polldata.save();
+
+    // Redirect back to the poll details page
+    res.redirect('/poll/'+polldata.poll.obj_id+'/'+polldata.poll.title);
+    
+    
+
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
   
 
 
 
-app.listen(2000, () => {
+app.listen(1000, () => {
     console.log(`Server started on port`);
 });
 
