@@ -17,9 +17,13 @@
                 <div class="col-12 col-md-8 col-lg-7  ps-lg-5  padding-start" >
                     <div class="">
                         <div class="shadow-lg rounded-4  p-4 p-md-5 p-lg-5 login-card mx-0 my-4 m-md-3 m-lg-4">
+                            
                         <h1 class="fw-bold">Hello</h1>
                         <h1 class="mb-3 fw-bold">Welcome</h1>
                         <p class="fs-5">Enter your credintials</p>
+                        <% if (error) { %>
+                            <p style="color: red;">Incorrect password. Please try again.</p>
+                        <% } %>
                         <form action="/login" method="POST">
 
                             <div class="input-container mt-5 mb-5">

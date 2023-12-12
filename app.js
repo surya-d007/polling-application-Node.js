@@ -61,7 +61,7 @@ app.get('/' , (req , res)=>{
 
 app.get('/login' , (req , res)=>{
     
-    res.render('login');
+  res.render('login',{error: null})
  })
 
 
@@ -88,10 +88,12 @@ app.post('/login', async (req, res) => {
       } else {
         const userWithEmail = await CredentialsModel.findOne({ email });
         if (userWithEmail) {
-          res.send("Wrong password");
+          //res.send("Wrong password");
+          res.render('login',{error:'Wrong Password'})
         } else {
           //not registed email id 
-          res.redirect('/register');
+          //res.redirect('/register');
+          res.render('register',{error:'email id is not registered '});
         }
       }
     } catch (err) {
@@ -103,12 +105,14 @@ app.post('/login', async (req, res) => {
   
 
 app.get('/register' , (req , res)=>{
-    res.render('register');
+  res.render('register',{error:null});
 })
 
 
 app.post('/register', async (req, res) => {
+    
     const { email, password } = req.body;
+    req.session.email=email;
     try {
       const existingUser = await CredentialsModel.findOne({ email });
       if (existingUser) {
@@ -117,7 +121,27 @@ app.post('/register', async (req, res) => {
       else {
         const newUser = new CredentialsModel({ email, password });
         await newUser.save();
-        res.send('Registration successful');
+        
+
+        const user = await CredentialsModel.findOne({ email, password });
+        if (user) {
+          console.log("one");
+        
+          
+            const base_link = req.protocol + '://' + req.get('host') + "/poll" ;
+
+            res.render('home-details-create-poll' , {Userdata : null , Base_Link : null} );
+          }
+
+
+
+
+
+
+
+
+
+
         //redirect to the home-detiss-cerate-poll
       }
     } catch (error) {
@@ -235,7 +259,9 @@ app.post('/create-new-poll', async (req, res) => {
   
       const Userdata = await HostUserModel.findOne({ email: userEmail });
       if (Userdata) {
-        res.render('home-details-create-poll', { Userdata: Userdata });
+
+        const base_link = req.protocol + '://' + req.get('host') + "/poll" ;
+        res.render('home-details-create-poll' , {Userdata : Userdata , Base_Link : base_link} );
       } else {
         console.error('User data not found');
         res.status(404).send('User data not found');
