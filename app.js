@@ -371,8 +371,6 @@ app.post('/voted', async (req, res) => {
   
 
 
-
-app.listen(1000, () => {
-    console.log(`Server started on port`);
-});
+const PORT = process.env.PORT || 80;
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
