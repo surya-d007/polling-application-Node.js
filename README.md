@@ -35,6 +35,7 @@ The Polling Application is a web-based platform that allows users to create and 
 2. **Install dependencies:**
     ```bash
     cd polling-application
+    cd server
     npm install
     ```
 
