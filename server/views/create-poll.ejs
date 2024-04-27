@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="create-poll.css">
+</head>
+<body class="m-3 m-md-5">
+    <form action="create-new-poll" method="post" class="fw-bold">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="polling title" name="polltitle">
+            <label for="floatingInput">Polling Title</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="poll description" name="description">
+            <label for="floatingInput">Poll description</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="option 1" name="opt-1">
+            <label for="floatingInput">Option 1</label>
+        </div>
+        <div id="pollOptions">
+            <!-- Additional options will be dynamically added here -->
+        </div>
+        <input type="hidden" id="optionCount" name="optionCount" value="1">
+        <button type="button" class=" btn button fw-bold me-3 my-3 px-3" id="addOption">Add Option</button>
+        <button type="submit" class="btn button fw-bold px-3 my-3">Create Poll</button>
+    </form>
+
+    <script>
+        document.getElementById('addOption').addEventListener('click', function () {
+            // Create new input fields for the additional polling option
+            const optionNumber = document.getElementById('pollOptions').childElementCount + 2;
+            const newOptionInput = document.createElement('div');
+            newOptionInput.classList.add('form-floating', 'mb-3');
+            newOptionInput.innerHTML = `
+                <input type="text" class="form-control" id="floatingInput" placeholder="option ${optionNumber}" name="opt-${optionNumber}">
+                <label for="floatingInput">Option ${optionNumber}</label>
+            `;
+            document.getElementById('pollOptions').appendChild(newOptionInput);
+
+            // Update the value of the hidden input field to store the count of options
+            document.getElementById('optionCount').value = optionNumber;
+        });
+    </script>
+</body>
+</html>
+
