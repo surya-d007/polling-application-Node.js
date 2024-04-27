@@ -29,7 +29,7 @@ The Polling Application is a web-based platform that allows users to create and 
 ## Setup Instructions
 1. **Clone the repository:**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/surya-d007/polling-application-Node.js.git
     ```
 
 2. **Install dependencies:**
